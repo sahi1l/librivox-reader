@@ -1,0 +1,15 @@
+MoSH = [
+"https://www.archive.org/download/memoirsofsherlockholmesv3_1502_librivox/memoirsofsherlockholmes_@_doyle_64kb.mp3",
+"*Silver Blaze",
+"*The Yellow Face",
+"*The Stock Broker's Clerk",
+"*The Gloria Scott",
+"*The Musgrave Ritual",
+"*The Reigate Puzzle",
+"*The Crooked Man",
+"*The Resident Patient",
+"*The Greek Interpreter",
+"*The Naval Treaty Part 1",
+"^The Naval Treaty Part 2",
+"-The Final Problem",
+]

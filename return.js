@@ -1,0 +1,17 @@
+RoSH = [
+    "https://www.archive.org/download/returnsherlockholmes_v3_1507_librivox/returnofsherlockholmes_01_doyle_64kb.mp3",
+    "*The Empty House",
+    "*The Norwood Builder",
+    "*The Dancing Men",
+    "*The Solitary Bicyclist",
+    "*The Priory School Part 1",
+    "^The Priory School Part 2",
+    "*Black Peter",
+    "-Charles Augustus Milverton",
+    "*The Six Napoleons",
+    "*The Three Students",
+    "*The Golden Pince-Nez",
+    "*The Missing Three-Quarter",
+    "*The Abbey Grange",
+    "*The Second Stain",
+]
