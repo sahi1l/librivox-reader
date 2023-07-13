@@ -1,0 +1,119 @@
+body {
+    background: url("leather.png");
+    background-size: cover;
+    font-family: "Libre Baskerville", "Times", serif;
+    color: goldenrod;
+}
+
+ul {list-style-type: none;}
+li p {margin:5px; display:inline-block;}
+li button {
+    margin-left: -5px;
+}
+/*.button {
+    display:inline-block;
+    text-align:center;
+    min-width: 15px;
+    padding: 2px;
+    font-weight:bold;
+}*/
+button {
+    background: transparent;
+    border: transparent;
+    font-family: "Libre Baskerville", "Times", serif;
+    font-weight: bold;
+    color: goldenrod;
+    cursor: pointer;
+}
+/*===HEADER===*/
+header {
+    grid-area: header;
+    text-align:center;
+    color: white;
+    font-family: "Libre Baskerville";
+    font-size: large;
+}
+header h1 {margin-bottom:0px;}
+
+header a {color: white;}
+header a:visited {color: goldenrod;}
+/*===NAV: List of available stories*/
+nav {
+    grid-area: storylist;
+    overflow-y:scroll;
+    background:rgba(255,0,0,0.1);
+    text-align:left;
+    padding-right: 5px;
+}
+nav ul {padding-left: 15px;}
+nav li {cursor: pointer;}
+nav h2 button {
+    border-radius: 5px;
+    border: 2px goldenrod solid;
+    padding: 5px;
+    margin-left: 10px;
+}
+/*===PLAYER===*/
+#player {
+    grid-area: player;
+    display:inline-block;
+    width:90%;
+    padding:5px;
+    text-align: center;
+    background-color:rgba(128,128,128,0.5);
+}
+#player.hide {opacity: 0.1;}
+#player #audio {width: 100%;}
+#player audio {width: 100%;}
+#player #buttons {
+    display: flex;
+    width: 250px;
+    justify-content: space-between;
+    margin: auto;
+    padding-top: 5px;
+}
+#player #buttons button {
+    height: 40px;
+    width: 40px;
+}
+#playing {font-size:24px;}
+.skip {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 125%;
+}
+
+/*===PLAYLIST===*/
+#playlist {
+    grid-area: playlist;
+    background: rgba(255,255,0,0.1);
+    overflow-y: scroll;
+    text-align:left;
+}
+
+  
+/*===MAIN===*/
+main {
+    display: grid;
+    grid-template-areas:
+        'header header'
+        'storylist player'
+        'storylist playlist';
+    grid-template-rows: 100px 180px calc(100vh - 280px); /*calc(100%-140px);*/
+    grid-template-columns: 300px calc(100vw - 300px); /*calc(100%-200px);*/
+}
+
+/*===PHONE===*/
+@media screen and (max-width:667px) {
+    main {
+        display: block;
+        text-align: center;
+    }
+    nav {
+        height:200px;
+        margin-bottom:10px;
+    }
+    #playlist {
+        height:100px;
+    }
+}

@@ -7,113 +7,44 @@
 <script src="adventures.js"></script>
 <script src="memoirs.js"></script>
 <script src="return.js"></script>
-<script src="index.js"></script>
+<script type=module src="index.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="index.css"></link>
 <!--
     BASIC LAYOUT: HEADER WITH NAME, FROZEN AT TOP
     LEFT COLUMN WITH LIST OF STORIES, SCROLLABLE
     PLAYER AT SAME LEVEL 
     -->
-<style>
-  body {
-      background: url("leather.png");
-      background-size: cover;
-      font-family: "Libre Baskerville", "Times";
-      color: goldenrod;
-  }
-  header {grid-area: header;
-          text-align:center;
-          color: white;
-          font-family: "Libre Baskerville";
-          font-size: large;
-         }
-  nav {grid-area: storylist;overflow-y:scroll;background:rgba(255,0,0,0.1);text-align:left;}
-  nav ul {padding-left: 15px;}
-  #player {grid-area: player;display:inline-block;width:90%;padding:5px;text-align: center;}
-  #player.hide {opacity: 0.1;}
-  #player #audio {width: 100%;}
-  #player audio {width: 100%;}
-  #playlist {
-      grid-area: playlist;
-      background: rgba(255,255,0,0.1);
-      overflow-y: scroll;
-      text-align:left;
-  }
-  #player #buttons {
-      display: flex;
-      width: 250px;
-      justify-content: space-between;
-      margin: auto;
-      padding-top: 5px;
-  }
-  #player #buttons .button {
-      height: 40px;
-      width: 40px;
-  }
-  ul {list-style-type: none;}
-  li p {margin:5px; display:inline-block;}
-  li .button {
-      margin-left: -5px;
-  }
-  .button {
-      display:inline-block;
-      text-align:center;
-      min-width: 15px;
-      padding: 2px;
-      font-weight:bold;
-  }
-  main {display: grid;
-        grid-template-areas:
-            'header header'
-            'storylist player'
-            'storylist playlist';
-        grid-template-rows: 100px 180px calc(100vh - 280px); /*calc(100%-140px);*/
-        grid-template-columns: 300px calc(100vw - 300px); /*calc(100%-200px);*/
-       }
-  @media screen and (max-width:667px) {
-      main {
-          display: block;
-          text-align: center;
-      }
-      nav {height:200px;margin-bottom:10px;}
-      #playlist {
-          height:100px;
-      }
-  }
-  nav {padding-right:5px;}
-  nav li {cursor: pointer;}
-  #playing {font-size:24px;}
-  #player {background-color:rgba(128,128,128,0.5);}
-  h1 {margin-bottom:0px;}
-
-</style>
 <main>
   <header>
     <hgroup>
       <h1>Sherlock Holmes on Librivox</h1>
-      Read by David Clarke
+      Read by <A HREF="https://librivox.org/reader/7408">David Clarke</A>
       </hgroup>
     </header>
 <nav>
-  <section id="good">
-    <h2>Good Ones <button>Shuffle</button></h2> 
+<!--  <section id="good">
+    <h2>
+      <button id="shuffle">Shuffle</button>
+      <button id="random">Choose Random</button>
+    </h2> 
     <ul></ul>
   </section>
   <section id="others">
     <h2>Other Ones</h2>
     <ul></ul>
-  </section>
+  </section>-->
 </nav>
 <div id="player">
   <p id="playing"></p>
   <div id="audio"></div>
   <div id="buttons">
-    <div class="button">-30</div>
-    <div class="button">-15</div>
-    <div class="button">+15</div>
-    <div class="button">+30</div>
+    <button class="skip">-30</button>
+    <button class="skip">-15</button>
+    <button class="skip">+15</button>
+    <button class="skip">+30</button>
     </div>
 </div>
 <ul id="playlist"></div>

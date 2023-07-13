@@ -1,22 +1,20 @@
-let good = [];
-let others = [];
+import { loadHolmes } from "./holmes.js";
 let playlist = [];
+let sources = {};
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-
-    // swap elements array[i] and array[j]
-    // we use "destructuring assignment" syntax to achieve that
-    // you'll find more details about that syntax in later chapters
-    // same can be written as:
-    // let t = array[i]; array[i] = array[j]; array[j] = t
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
-function ShuffleGood() {
-    playlist = [...good];
+function Shuffle(source) {
+    playlist = [...source.entries];
     shuffle(playlist);
     UpdatePlaylist();
+}
+
+function GetRandom(source) {
+    AddToPlaylist(source.get());
 }
 function skip(amt) {
     let time = $("audio")[0].currentTime;
@@ -34,7 +32,7 @@ function UpdatePlaylist() {
     for (let n in playlist) {
         let entry = playlist[n];
         let $li = $("<li>").appendTo("#playlist").html(entry.name);
-        $("<div>").addClass("button").html("&#128465;").prependTo($li).on("click",(e,en=entry)=>RemoveFromPlaylist(n));
+        $("<button>").addClass("trash").html("&#128465;").prependTo($li).on("click",(e,en=entry)=>RemoveFromPlaylist(n));
     }
     if(!$("audio").length) {
         Play();
@@ -72,36 +70,40 @@ function Play(entry) {
 }
 
 function init() {
-    for (let L of [AoSH,MoSH,RoSH]) {
-        let urltemplate = L[0];
-        let last = null;
-        for (let n=1; n<L.length; n++) {
-            let url = urltemplate.replace("@",("0"+n).slice(-2));
-            let code = L[n][0];
-            let name = L[n].slice(1);
-            if (code == "^" && last) {
-                last.parttwo = url;
-                continue;
+    sources = loadHolmes();
+    console.debug(sources);
+    for (let srcid of Object.keys(sources)) {
+        let source = sources[srcid];
+        source.$w = $("<section>").appendTo("nav");
+        let $h2 = $("<h2>").html(source.name).appendTo(source.$w);
+        $("<button>").addClass("shuffle").html("Shuffle")
+            .appendTo($h2)
+            .on("click", (e,s=source) => {Shuffle(s);}
+               );
+        $("<button>").addClass("random").html("Random").appendTo($h2)
+            .on("click", (e,s=source) => {GetRandom(s);}
+               );
+        let $ul = $("<ul>").appendTo(source.$w);
+        console.debug(source,source.length());
+        for (let i=0;i<source.length();i++) {
+            let entry = source.get(i);
+            let $li = $("<li>").appendTo($ul);
+            let $row = $("<p>").appendTo($li);
+            $row.on("click",(e,en=entry)=>Play(entry));
+            $row.html(entry.name);
+            $row.attr({href:entry.url});
+            let $add = $("<button>")
+                .addClass("add")
+                .css({display:"inline"})
+                .html("+")
+                .prependTo($li);
+            $add.on("click",(e,en=entry) => {AddToPlaylist(en);});
+            if (entry.parttwo) {
+                $row.append("*");
             }
-            let entry = {name: name.replace(" Part 1",""), url: url};
-            if (code == "*") {good.push(entry); last = good[good.length-1];}
-            if (code == "-") {others.push(entry); last = others[others.length-1];}}
-    }
-    let $ul = $("#good ul");
-    for (let i=0;i<good.length;i++) {
-        let entry = good[i];
-        let $li = $("<li>").appendTo($ul);
-        let $row = $("<p>").appendTo($li);
-        $row.on("click",(e,en=entry)=>Play(entry));
-        $row.html(entry.name);
-        $row.attr({href:entry.url});
-        let $add = $("<div>").addClass("button").css({display:"inline"}).html("+").prependTo($li);
-        $add.on("click",(e,en=entry) => {AddToPlaylist(en);});
-        if (entry.parttwo) {
-            $row.append("*");
         }
     }
-    $ul = $("#others ul");
+/*    $ul = $("#others ul");
     for (let i=0;i<others.length;i++) {
         let entry = others[i];
         let $li = $("<li>").appendTo($ul);
@@ -113,9 +115,8 @@ function init() {
             $row.append("*");
         }
     }
-
-    $("#player #buttons .button").on("click",(e) => {skip(Number(e.target.innerText))});
-    $("#good h2 button").on("click",ShuffleGood);
+*/
+    $("#player #buttons button").on("click",(e) => {skip(Number(e.target.innerText));});
     ClearAudio();
 }
         
