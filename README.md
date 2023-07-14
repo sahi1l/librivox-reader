@@ -29,8 +29,8 @@ collections of stories.  If you'd like to adapt it, here is a bit of
 an explainer of the structure:
 - `index.js` is the main code.  It should largely stay the same, except
 for the first line.
-- `Holmes/holmes.js defines a class called `Source` which is used to
-define a particular list of stories.  It returns a list `of `Source`'
+- `Holmes/holmes.js` defines a class called `Source` which is used to
+define a particular list of stories.  It returns a list of `Source`s
 called `sources`.  It parses Holmes/list.js to produce this.
 - `Holmes/list.js` is the list of stories imported by
 `Holmes/holmes.js`.  It exports one list for each collection,
