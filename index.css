@@ -37,6 +37,7 @@ nav {
     background:rgba(255,0,0,0.1);
     text-align:left;
     padding-right: 5px;
+    position: relative;
 }
 nav ul {padding-left: 5px;
         margin: 5px;
@@ -52,6 +53,15 @@ button.bordered {
     border: 2px goldenrod solid;
     padding: 5px;
     margin-left: 10px;
+}
+nav:after {
+    position: absolute;
+    content: "\2193";
+    top: calc(100% - 60px);
+    right: 0;
+    z-index: 2;
+    opacity:0.5;
+    font-size:40px;
 }
 /*===PLAYER===*/
 #player {
