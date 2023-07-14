@@ -31,7 +31,7 @@ export let Memoirs = [
 ]
 
 export let Return = [
-    "https://www.archive.org/download/returnsherlockholmes_v3_1507_librivox/returnofsherlockholmes_01_doyle_64kb.mp3",
+    "https://www.archive.org/download/returnsherlockholmes_v3_1507_librivox/returnofsherlockholmes_@_doyle_64kb.mp3",
     "*The Empty House",
     "*The Norwood Builder",
     "*The Dancing Men",

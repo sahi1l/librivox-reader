@@ -4,9 +4,6 @@
   <title>Sherlock Holmes Shuffler</title>
   <script src="/lib/jquery.js"></script>
 <link rel="icon" href="holmesicon.png">
-<script src="adventures.js"></script>
-<script src="memoirs.js"></script>
-<script src="return.js"></script>
 <script type=module src="index.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,11 +38,18 @@
   <p id="playing"></p>
   <div id="audio"></div>
   <div id="buttons">
+    <button class="skip skipstart">&laquo;</button>
     <button class="skip">-30</button>
     <button class="skip">-15</button>
     <button class="skip">+15</button>
     <button class="skip">+30</button>
+    <button class="skip skipend">&raquo;</button>
+  </div>
+
+</div>
+<div id="playlist">
+  <button id="clear" class="bordered">Clear Playlist</button>
+  <ul>
     </div>
 </div>
-<ul id="playlist"></div>
 </main>

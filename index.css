@@ -10,13 +10,6 @@ li p {margin:5px; display:inline-block;}
 li button {
     margin-left: -5px;
 }
-/*.button {
-    display:inline-block;
-    text-align:center;
-    min-width: 15px;
-    padding: 2px;
-    font-weight:bold;
-}*/
 button {
     background: transparent;
     border: transparent;
@@ -45,9 +38,16 @@ nav {
     text-align:left;
     padding-right: 5px;
 }
-nav ul {padding-left: 15px;}
+nav ul {padding-left: 5px;
+        margin: 5px;
+       }
 nav li {cursor: pointer;}
-nav h2 button {
+nav h2 {
+    margin-bottom:0px;
+}
+nav #rndbuttons {margin:5px;}
+
+button.bordered {
     border-radius: 5px;
     border: 2px goldenrod solid;
     padding: 5px;
@@ -84,13 +84,20 @@ nav h2 button {
 }
 
 /*===PLAYLIST===*/
+#playlist button#clear {
+    margin-top:5px;
+}
 #playlist {
     grid-area: playlist;
-    background: rgba(255,255,0,0.1);
+/*    background: rgba(255,255,0,0.1);*/
+}
+#playlist>ul {
     overflow-y: scroll;
     text-align:left;
+    background: rgba(255,255,0,0.1);
 }
-
+#playlist li>button {cursor: pointer;}
+#playlist li>p {cursor: pointer;}
   
 /*===MAIN===*/
 main {

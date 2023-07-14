@@ -1,13 +1,21 @@
-import { Adventures, Memoirs, Return } from "./holmesList.js";
-class Source {
-    constructor(name) {
+import { Adventures, Memoirs, Return } from "./list.js";
+class Entry {
+    constructor(name,url) {
         this.name = name;
+        this.url = url;
+        this.isentry = true;
+    }
+}
+class Source {
+    constructor(name,tag) {
+        this.name = name;
+        this.tag = tag;
         this.entries = [];
     }
     add(entry) {this.entries.push(entry);}
     length() {return this.entries.length;}
     get(val) {
-        if (val== undefined) {
+        if (val==undefined) {
             val = Math.floor(Math.random() * this.length());
         } else if (val==-1) {val = this.length()-1;}
         return this.entries[val];
@@ -15,8 +23,8 @@ class Source {
 }
 
 export function loadHolmes() {
-    let sources = {good: new Source("Good"),
-               others: new Source("Others")};
+    let sources = [new Source("Stories",'good'),
+                   new Source("Disturbing",'others')];
     for (let L of [Adventures,Memoirs,Return]) {
         let urltemplate = L[0];
         let last = null;
@@ -28,11 +36,11 @@ export function loadHolmes() {
                 last.parttwo = url;
                 continue;
             }
-            let entry = {name: name.replace(" Part 1",""),
-                         url: url};
-            if (code == "*") {sources.good.add(entry); last = sources.good.get(-1);}
-            if (code == "-") {sources.others.add(entry); last = sources.others.get(-1);}
+            let entry = new Entry(name.replace(" Part 1",""),url);
+            if (code == "*") {sources[0].add(entry); last = sources[0].get(-1);}
+            if (code == "-") {sources[1].add(entry); last = sources[1].get(-1);}
         }
     }
     return sources;
 }
+export let sources = loadHolmes();
