@@ -46,4 +46,32 @@ export let Return = [
     "*The Missing Three-Quarter",
     "*The Abbey Grange",
     "*The Second Stain",
-]
+];
+export let LastBow = [
+    "https://ia800205.us.archive.org/34/items/his_last_bow_version_3_1603_librivox/hislastbow_@_doyle_128kb.mp3",
+    "*Wisteria Lodge",
+    "^Wisteria Lodge Part II",
+    "*Cardboard Box",
+    "*Red Circle",
+    "^Red Circle Part II",
+    "*Bruce-Partington Plans",
+    "*Dying Detective",
+    "*Lady Frances Carfax",
+    "*The Devil's Foot",
+    "*His Last Bow"
+];
+export let Casebook = [
+    "https://ia601606.us.archive.org/22/items/casebooksherlockholmes_2303_librivox/casebookofsherlockholmes_@_doyle_64kb.mp3",
+    "*The Illustrious Client",
+    "*The Blanched Soldier",
+    "*The Mazarin Stone",
+    "*The Three Gables",
+    "*The Sussex Vampire",
+    "*The Three Garridebs",
+    "*Thor Bridge",
+    "*The Creeping Man",
+    "*The Lion's Mane",
+    "*The Veiled Lodger",
+    "*Shoscombe Old Place",
+    "*The Retired Colourman"
+    ]

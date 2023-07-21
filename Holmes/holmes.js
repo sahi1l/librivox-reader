@@ -1,4 +1,4 @@
-import { Adventures, Memoirs, Return } from "./list.js";
+import { Adventures, Memoirs, Return, LastBow } from "./list.js";
 class Entry {
     constructor(name,url) {
         this.name = name;
