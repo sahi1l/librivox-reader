@@ -1,9 +1,9 @@
 ## Backstory
 I like listening to well-known stories when I fall asleep, and one of
 my favorite collections is the Sherlock Holmes stories as read by
-David Clarke on Librivox.  I used to listen to them on the Librivox
+[David Clarke](https://librivox.org/reader/7408) on [Librivox](https://librivox.org).  I used to listen to them on the Librivox
 app on iOS and then Android, but I ran into several problems:
-- I wanted a random story, which the app couldn't od.
+- I wanted it to play a random story, which the app couldn't do.
 - I would often leave it on all night, and wake up to a different
 story. However there are some Holmes stories I find disturbing for
 bedtime, like "The Five Orange Pips" or "The Speckled Band".
@@ -12,12 +12,7 @@ bedtime, like "The Five Orange Pips" or "The Speckled Band".
 
 ## This app
 This app has a list of stories from the Adventures, Memoirs, and
-Return of Sherlock Holmes, with my few nonfavorites separated off
-towards the bottom.  I can click on any story title to play it
-directly from Librivox, or press the + button next to the title to add
-it to the playlist.  I can also press the "Random" button to select a
-random story from the list, or "Shuffle" to add a shuffled list of all
-the stories to the playlist.
+Return of Sherlock Holmes plus His Last Bow, with my few nonfavorites separated off towards the bottom.  I can click on any story title to play it directly from Librivox, or press the + button next to the title to add it to the playlist.  I can also press the "Random" button to select a random story from the list, or "Shuffle" to add a shuffled list of all the stories to the playlist.
 
 There are a few stories, like "The Priory School", that come in two
 parts; the player should combine them and play Part II directly after
