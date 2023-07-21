@@ -55,7 +55,7 @@ export let LastBow = [
     "*Red Circle",
     "^Red Circle Part II",
     "*Bruce-Partington Plans",
-    "*Dying Detective",
+    "-Dying Detective",
     "*Lady Frances Carfax",
     "*The Devil's Foot",
     "*His Last Bow"

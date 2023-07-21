@@ -25,7 +25,7 @@ class Source {
 export function loadHolmes() {
     let sources = [new Source("Stories",'good'),
                    new Source("Uncomfortable",'others')];
-    for (let L of [Adventures,Memoirs,Return]) {
+    for (let L of [Adventures,Memoirs,Return,LastBow]) {
         let urltemplate = L[0];
         let last = null;
         for (let n=1; n<L.length; n++) {
