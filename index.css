@@ -134,3 +134,17 @@ main {
         height:100px;
     }
 }
+#error {
+    position:fixed;
+    top:0px;
+    right: 0px;
+    text-align: right;
+    color:red;
+    margin: 20px;
+    padding: 5px;
+    z-index:3;
+    background: goldenrod;
+}
+#error:empty {
+    background: transparent;
+}
