@@ -1,6 +1,7 @@
-/*global $*/
+/*global $, Cookies*/
 import { sources } from "./Holmes/holmes.js";
-
+let playing = "";
+let namelisting = {};
 class Playlist {
     constructor() {
         this.getWidgets = this.getWidgets.bind(this);
@@ -95,22 +96,37 @@ function ClearAudio() {
     $("#playing").html("");
     $("#player").addClass("hide");
 }
+function SaveCookies() {
+    let $audio = $("audio");
+    if ($audio.length==0) {return;}
+    let name = playing;
+    let time = $audio[0].currentTime;
+    if (name != "") {
+        Cookies.set("name",name,{expires: 1});
+        console.debug("time=",time);
+        Cookies.set("time",time,{expires: 1});
+    }
+}
 function Play(entry) {
     if (!entry || !entry.name) {//sometimes Play is getting an event thingy
         entry = playlist.next();
-        if(!entry || !entry.name) {return;}
+        if(!entry || !entry.name) {ClearCookie();return;}
     }
     $("#playing").html(entry.name);
     $("#audio").html("");
     $("#player").removeClass("hide");
     let $audio = $("<audio>").prop({controls:true,autoplay:true});
+    playing = entry.name;
     $("<source>").attr({src: entry.url, type:"audio/mp3"}).appendTo($audio);
     $audio.appendTo($("#audio"));
+    $audio.on("abort",(e) => $("#error").html("abort"));
+    $audio.on("error",(e) => $("#error").html("loading error"));
+    $audio.on("stalled",(e) => $("#error").html("stalled"));
     if(entry.parttwo) {
-        $("audio").on("ended",(e)=>{
+        $audio.on("ended",(e)=>{
             Play({name:entry.name+" Part II",url:entry.parttwo});});
     } else {
-        $("audio").on("ended",Play);
+        $("audio").on("ended",()=>{ClearCookie();Play();});
     }
     playlist.update();
 }
@@ -139,6 +155,7 @@ function PopulateStoryList() {
         let $ul = $("<ul>").appendTo(source.$w);
         for (let i=0;i<source.length();i++) {
             let entry = source.get(i);
+            namelisting[entry.name] = entry;
             let $li = $("<li>").appendTo($ul);
             let $row = $("<p>").appendTo($li);
             $row.on("click",(e,en=entry)=>Play(entry));
@@ -154,10 +171,39 @@ function PopulateStoryList() {
         }
     }
 }
+
+function GetCookies() {
+    let name = Cookies.get("name");
+    let time = Cookies.get("time");
+    console.debug("cookie time=",time);
+    if (!name) {return;}
+    let entry = namelisting[name];
+    if (entry) {
+        Play(entry);
+        $("audio")[0].currentTime = Number(time);
+//        $("#last").show();
+        $("#last").on("click",(e,t=time) => {
+            console.debug("getting t=",t);
+            $("audio")[0].currentTime = Number(t);
+            $("#last").hide();
+        }
+        );
+    }
+}
+function ClearCookie() {
+    playing = "";
+    Cookies.remove("name");
+    Cookies.remove("time");
+}
+
 function init() {
     PopulateStoryList();
     $("#player #buttons button.skip").on("click",(e) => {skip(Number(e.target.innerText),e.target.className);});
     ClearAudio();
+    $("#last").hide();
+    
+    GetCookies();
+    setInterval(SaveCookies,5000);
 }
         
 
