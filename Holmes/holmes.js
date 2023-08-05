@@ -1,4 +1,4 @@
-import { Adventures, Memoirs, Return, LastBow } from "./list.js";
+import { Adventures, Memoirs, Return, LastBow, Casebook } from "./list.js";
 class Entry {
     constructor(name,url) {
         this.name = name;
@@ -25,7 +25,7 @@ class Source {
 export function loadHolmes() {
     let sources = [new Source("Stories",'good'),
                    new Source("Uncomfortable",'others')];
-    for (let L of [Adventures,Memoirs,Return,LastBow]) {
+    for (let L of [Adventures,Memoirs,Return,LastBow,Casebook]) {
         let urltemplate = L[0];
         let last = null;
         for (let n=1; n<L.length; n++) {
