@@ -47,7 +47,7 @@ nav h2 {
     margin-bottom:0px;
 }
 nav #rndbuttons {margin:5px;}
-
+nav h2,nav #rndbuttons {display:inline-block;}
 button.bordered {
     border-radius: 5px;
     border: 2px goldenrod solid;

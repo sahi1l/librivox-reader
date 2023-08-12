@@ -2,12 +2,41 @@
 import { sources } from "./Holmes/holmes.js";
 let playing = "";
 let namelisting = {};
+let history;
+class History {
+    //makes a random choice from a list
+    //uses localStorage and values to avoid making duplicate jobs
+    constructor() {
+        this.cname = "history";
+        this.maxhistory = 10; //maximum number of stories to avoid when choosing
+        this.history = (Cookies.get(this.cname)??"").split(";");
+    }
+    write() {
+        Cookies.set(this.cname, this.history.join(";"));
+    }
+    add(item) {
+        if (this.contains(item)) {
+            //move its previous appearance to the front
+            this.history.splice(this.history.indexOf(item),1);
+            this.history.push(item);
+        } else {
+            this.history.push(item);
+            this.history = this.history.slice(-this.maxhistory);
+        }
+        this.write();
+    }
+    contains(item) {
+        return (item in this.history);
+    }
+}
+
 class Playlist {
     constructor() {
         this.getWidgets = this.getWidgets.bind(this);
         this.clear = this.clear.bind(this);
         $(this.getWidgets); //if this doesn't work, put it in init
         this.list = [];
+        this.names = []; //redundant with this.list to save time
     }
     getWidgets() {
         this.$w = $("#playlist>ul");
@@ -15,31 +44,46 @@ class Playlist {
         this.$clear.on("click",this.clear);
     }
     next() {
+        this.names.splice(0,1);
         return this.list.splice(0,1)[0];
     };
     add(entry,allowDups=true) {//replaces AddToPlaylist
         //IDEA: implement allowDups=false
         this.list.push(entry);
+        this.names.push(entry.name);
         this.update();
+    }
+    dupQ(entry) {
+        if (entry === undefined) {
+            return true;
+        }
+        return (history.contains(entry.name) || this.names.includes(entry.name));
     }
     addShuffle(entries,allowDups=true){
         entries = [...entries];
         let t = 0;
         while (entries.length>0 && t<100) {
-            let i = Math.floor(Math.random()*entries.length);
-            let entry = entries.splice(i,1)[0];
+            let entry;
+            do {
+                let i = Math.floor(Math.random()*entries.length);
+                entry = entries.splice(i,1)[0];
+            } while (this.dupQ(entry));
+            //FIX: also check if the playlist includes the name
             this.list.push(entry);
+            this.names.push(entry.name);
             t++;
         }
         this.update();
     }
     remove(n) {//replaces RemoveFromPlaylist
         let result = this.list.splice(n,1)[0];
+        this.names.splice(n,1);
         this.update();
         return result;
     }
     clear () {
         this.list = [];
+        this.names = [];
         this.update();
     }
     isempty() {
@@ -71,10 +115,13 @@ function Shuffle(source) {
 }
 
 function GetRandom(source) {
-    playlist.add(source.get());
+    let G;
+    do { 
+        G = source.get();
+    } while (playlist.dupQ(G));
+    playlist.add(G);
 }
 function skip(amt,cls=undefined) {
-    console.debug("skip",amt,cls);
     let audio = $("audio")[0];
     let time = audio.currentTime;
     if(cls) {
@@ -103,7 +150,6 @@ function SaveCookies() {
     let time = $audio[0].currentTime;
     if (name != "") {
         Cookies.set("name",name,{expires: 1});
-        console.debug("time=",time);
         Cookies.set("time",time,{expires: 1});
     }
 }
@@ -112,6 +158,7 @@ function Play(entry) {
         entry = playlist.next();
         if(!entry || !entry.name) {ClearCookie();return;}
     }
+    history.add(entry.name);
     $("#playing").html(entry.name);
     $("#audio").html("");
     $("#player").removeClass("hide");
@@ -149,7 +196,7 @@ function PopulateStoryList() {
             .html("Random")
             .appendTo($buttons)
             .on("click",
-                (e,src=source) => {playlist.add(source.get());}
+                (e,src=source) => {GetRandom(src);}
                );
         
         let $ul = $("<ul>").appendTo(source.$w);
@@ -175,7 +222,6 @@ function PopulateStoryList() {
 function GetCookies() {
     let name = Cookies.get("name");
     let time = Cookies.get("time");
-    console.debug("cookie time=",time);
     if (!name) {return;}
     let entry = namelisting[name];
     if (entry) {
@@ -183,7 +229,6 @@ function GetCookies() {
         $("audio")[0].currentTime = Number(time);
 //        $("#last").show();
         $("#last").on("click",(e,t=time) => {
-            console.debug("getting t=",t);
             $("audio")[0].currentTime = Number(t);
             $("#last").hide();
         }
@@ -197,7 +242,10 @@ function ClearCookie() {
 }
 
 function init() {
+    console.log(Cookies);
     PopulateStoryList();
+    history = new History();
+    
     $("#player #buttons button.skip").on("click",(e) => {skip(Number(e.target.innerText),e.target.className);});
     ClearAudio();
     $("#last").hide();
@@ -207,4 +255,4 @@ function init() {
 }
         
 
-$(init)
+$(init);
