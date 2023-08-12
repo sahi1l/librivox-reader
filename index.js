@@ -23,6 +23,7 @@ class History {
             this.history.push(item);
             this.history = this.history.slice(-this.maxhistory);
         }
+        this.write();
     }
     contains(item) {
         return (item in this.history);
