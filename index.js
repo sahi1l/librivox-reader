@@ -145,6 +145,7 @@ function ClearAudio() {
 }
 function SaveCookies() {
     let $audio = $("audio");
+    SetReadyMarker();
     if ($audio.length==0) {return;}
     let name = playing;
     let time = $audio[0].currentTime;
@@ -152,6 +153,22 @@ function SaveCookies() {
         Cookies.set("name",name,{expires: 1});
         Cookies.set("time",time,{expires: 1});
     }
+}
+function EventMessage(e) {
+    //$audio.on("eventname","message",EventMessage)
+    let msg = e.data;
+    console.debug(msg,e);
+    $("#error").html(msg).removeClass("olderror");
+    setTimeout(()=>$("#error").addClass("olderror"), 1000);
+}
+function SetReadyMarker() {
+    let audio = $("audio")[0];
+    let state = audio.readyState;
+    let color = ["red","yellow","green","blue","black"][state];
+    $(audio).css("background-color",color);
+    if(state<4) {setTimeout(SetReadyMarker,200);}
+    console.debug("state=",state,color);
+    
 }
 function Play(entry) {
     if (!entry || !entry.name) {//sometimes Play is getting an event thingy
@@ -162,13 +179,22 @@ function Play(entry) {
     $("#playing").html(entry.name);
     $("#audio").html("");
     $("#player").removeClass("hide");
-    let $audio = $("<audio>").prop({controls:true,autoplay:true});
+    let audio = new Audio(entry.url);
+    let $audio = $(audio);
+    audio.controls = true;
+    audio.autoplay = true;
     playing = entry.name;
-    $("<source>").attr({src: entry.url, type:"audio/mp3"}).appendTo($audio);
     $audio.appendTo($("#audio"));
-    $audio.on("abort",(e) => $("#error").html("abort"));
-    $audio.on("error",(e) => $("#error").html("loading error"));
-    $audio.on("stalled",(e) => $("#error").html("stalled"));
+    SetReadyMarker();
+    $audio.on("abort", "Aborted", EventMessage);
+    $audio.on("error", "Loading Error", EventMessage);
+    $audio.on("stalled", "Stalled", EventMessage);
+    for(let ev of ["canplay","canplaythrough","durationchange","emptied",
+                   "ended","loadeddata","loadedmetadata","loadstart","pause",
+                   "play","playing","progress","ratechange","seeked",
+                   "seeking","suspend","timeupdate","waiting"]) {
+        $audio.on(ev,ev,EventMessage);
+    }
     if(entry.parttwo) {
         $audio.on("ended",(e)=>{
             Play({name:entry.name+" Part II",url:entry.parttwo});});
@@ -242,7 +268,6 @@ function ClearCookie() {
 }
 
 function init() {
-    console.log(Cookies);
     PopulateStoryList();
     history = new History();
     

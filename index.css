@@ -144,7 +144,11 @@ main {
     padding: 5px;
     z-index:3;
     background: goldenrod;
+    opacity: 1;
 }
 #error:empty {
     background: transparent;
+}
+#error.faded {
+    opacity: 0.3;
 }
