@@ -152,3 +152,7 @@ main {
 #error.faded {
     opacity: 0.3;
 }
+#history {
+    font-size: 70%;
+    margin-top: -1ex;
+}

@@ -15,14 +15,9 @@ class History {
         Cookies.set(this.cname, this.history.join(";"));
     }
     add(item) {
-        if (this.contains(item)) {
-            //move its previous appearance to the front
-            this.history.splice(this.history.indexOf(item),1);
-            this.history.push(item);
-        } else {
-            this.history.push(item);
-            this.history = this.history.slice(-this.maxhistory);
-        }
+        this.history = this.history.filter((x)=>x!=item);
+        this.history.push(item);
+        this.history = this.history.slice(-this.maxhistory);
         this.write();
     }
     contains(item) {
@@ -161,20 +156,27 @@ function EventMessage(e) {
     $("#error").html(msg).removeClass("olderror");
     setTimeout(()=>$("#error").addClass("olderror"), 1000);
 }
+function SetHistoryField() {
+    history = Cookies.get("history")
+}
 function SetReadyMarker() {
+    $("#history").html(Cookies.get("name"));
     let audio = $("audio")[0];
     let state = audio.readyState;
     let color = ["red","yellow","green","blue","black"][state];
     $(audio).css("background-color",color);
     if(state<4) {setTimeout(SetReadyMarker,200);}
-    console.debug("state=",state,color);
+    //console.debug("state=",state,color);
     
 }
 function Play(entry) {
     if (!entry || !entry.name) {//sometimes Play is getting an event thingy
         entry = playlist.next();
-        if(!entry || !entry.name) {ClearCookie();return;}
+        ClearCookie();
+        return;
+        //if(!entry || !entry.name) {ClearCookie();return;}
     }
+    console.debug("playing ",entry.name);
     history.add(entry.name);
     $("#playing").html(entry.name);
     $("#audio").html("");
