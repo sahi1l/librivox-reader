@@ -14,6 +14,14 @@ class History {
     write() {
         Cookies.set(this.cname, this.history.join(";"));
     }
+    display() {
+        let result = "";
+        for(let i=this.history.length-1; i>=0; i--) {
+            let story = this.history[i].replace("The ","");
+            result += story.replaceAll(/[^A-Z]/g,"") + " "
+        }
+        $("#history").html(result);
+    }
     add(item) {
         this.history = this.history.filter((x)=>x!=item);
         this.history.push(item);
@@ -156,11 +164,9 @@ function EventMessage(e) {
     $("#error").html(msg).removeClass("olderror");
     setTimeout(()=>$("#error").addClass("olderror"), 1000);
 }
-function SetHistoryField() {
-    history = Cookies.get("history")
-}
 function SetReadyMarker() {
-    $("#history").html(Cookies.get("name"));
+    history.display();
+//    $("#history").html(Cookies.get("name"));
     let audio = $("audio")[0];
     let state = audio.readyState;
     let color = ["red","yellow","green","blue","black"][state];
