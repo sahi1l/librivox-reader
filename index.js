@@ -3,6 +3,53 @@ import { sources } from "./Holmes/holmes.js";
 let playing = "";
 let namelisting = {};
 let history;
+let audio;
+class AudioFile {
+    constructor() {
+	this.$w = $("audio")
+	this.w = this.$w[0]
+	this.$w.on("abort", "Aborted", EventMessage);
+	this.$w.on("error", "Loading Error", EventMessage);
+	this.$w.on("stalled", "Stalled", EventMessage);
+	for(let ev of ["canplay","canplaythrough","durationchange","emptied",
+                       "ended","loadeddata","loadedmetadata","loadstart","pause",
+                       "play","playing","progress","ratechange","seeked",
+                       "seeking","suspend","timeupdate","waiting"]) {
+            this.$w.on(ev,ev,EventMessage);
+	}
+    }
+    setState() {
+	let state = this.w.readyState;
+	let color = ["red","yellow","green","blue","black"][state];
+	let desc = ["Nothing received",
+		    "Have metadata",
+		    "Have current data",
+		    "Can play some",
+		    "Ready"][state];
+	this.$w.css("background-color",color);
+	$("#status").html(desc);
+	if(state<4) {setTimeout(this.setState.bind(this),200);}
+    }
+    time(val) {
+	if (val==undefined) {
+	    return this.w.currentTime;
+	} else {
+	    if(val=="end") {val=this.w.duration;}
+	    this.w.currentTime = val;
+	}
+    }
+    src(val) {
+	if (val==undefined) {return this.w.src;}
+	this.w.src = val;
+    }
+    isDone() {
+	return this.w.duration - this.w.currentTime < 1
+    }
+    
+    isEmpty() {
+	return (this.w.src == "" || this.isDone());
+    }
+}
 class History {
     //makes a random choice from a list
     //uses localStorage and values to avoid making duplicate jobs
@@ -52,10 +99,18 @@ class Playlist {
     };
     add(entry,allowDups=true) {//replaces AddToPlaylist
         //IDEA: implement allowDups=false
+	let parttwo = entry.parttwo;
+	entry.parttwo = undefined;
         this.list.push(entry);
         this.names.push(entry.name);
+	if(parttwo){
+	    this.add({name: entry.name+" Part II",
+		      url: parttwo,
+		      isentry: true});
+	}
         this.update();
     }
+    
     dupQ(entry) {
         if (entry === undefined) {
             return true;
@@ -108,7 +163,7 @@ class Playlist {
                 .on("click",(e)=>this.remove(n));
         }
         this.$clear.toggle(!this.isempty());
-        if(!$("audio").length) {Play();}
+	if (audio.isEmpty()) {Play();}
     }
 }
 let playlist = new Playlist();
@@ -125,40 +180,36 @@ function GetRandom(source) {
     playlist.add(G);
 }
 function skip(amt,cls=undefined) {
-    let audio = $("audio")[0];
-    let time = audio.currentTime;
+    let time = audio.time();
     if(cls) {
         if(cls.includes("skipstart")){
-            audio.currentTime = 0;
+	    audio.time(0);
             return;
         } else if (cls.includes("skipend")) {
-            audio.currentTime = audio.duration;
+	    audio.time("end");
             return;
         }
     }
     if (time) {//if something is actually playing
-        audio.currentTime = time+amt;
+	audio.time(audio.time()+amt);
         //if amt is undefined, jump to the end
     }
 }
 function ClearAudio() {
-    $("#audio").html("");
     $("#playing").html("");
     $("#player").addClass("hide");
 }
 function SaveCookies() {
-    let $audio = $("audio");
     SetReadyMarker();
-    if ($audio.length==0) {return;}
+    if (audio.isEmpty()) {return;}
     let name = playing;
-    let time = $audio[0].currentTime;
+    let time = audio.time();
     if (name != "") {
         Cookies.set("name",name,{expires: 1});
         Cookies.set("time",time,{expires: 1});
     }
 }
 function EventMessage(e) {
-    //$audio.on("eventname","message",EventMessage)
     let msg = e.data;
     console.debug(msg,e);
     $("#error").html(msg).removeClass("olderror");
@@ -166,48 +217,35 @@ function EventMessage(e) {
 }
 function SetReadyMarker() {
     history.display();
-//    $("#history").html(Cookies.get("name"));
-    let audio = $("audio")[0];
-    let state = audio.readyState;
-    let color = ["red","yellow","green","blue","black"][state];
-    $(audio).css("background-color",color);
-    if(state<4) {setTimeout(SetReadyMarker,200);}
+    audio.setState();
+//    let state = audio.w.readyState;
+//    let color = ["red","yellow","green","blue","black"][state];
+//    audio.$w.css("background-color",color);
+//    if(state<4) {setTimeout(SetReadyMarker,200);}
     //console.debug("state=",state,color);
     
 }
 function Play(entry) {
     if (!entry || !entry.name) {//sometimes Play is getting an event thingy
         entry = playlist.next();
-        ClearCookie();
-        return;
-        //if(!entry || !entry.name) {ClearCookie();return;}
+	//if there is no next, then do nothing
+        if(!entry || !entry.name) {ClearCookie();return;}
     }
     console.debug("playing ",entry.name);
     history.add(entry.name);
     $("#playing").html(entry.name);
-    $("#audio").html("");
     $("#player").removeClass("hide");
-    let audio = new Audio(entry.url);
-    let $audio = $(audio);
-    audio.controls = true;
-    audio.autoplay = true;
+    audio.src(entry.url);
+//    $audio.attr("src",entry.url);
     playing = entry.name;
-    $audio.appendTo($("#audio"));
     SetReadyMarker();
-    $audio.on("abort", "Aborted", EventMessage);
-    $audio.on("error", "Loading Error", EventMessage);
-    $audio.on("stalled", "Stalled", EventMessage);
-    for(let ev of ["canplay","canplaythrough","durationchange","emptied",
-                   "ended","loadeddata","loadedmetadata","loadstart","pause",
-                   "play","playing","progress","ratechange","seeked",
-                   "seeking","suspend","timeupdate","waiting"]) {
-        $audio.on(ev,ev,EventMessage);
-    }
     if(entry.parttwo) {
-        $audio.on("ended",(e)=>{
+	//FIX:
+	//1. Add the second part to the top of the playlist to make it explicit
+        audio.$w.on("ended",(e)=>{
             Play({name:entry.name+" Part II",url:entry.parttwo});});
     } else {
-        $("audio").on("ended",()=>{ClearCookie();Play();});
+	audio.$w.on("ended",()=>{ClearCookie();Play();});
     }
     playlist.update();
 }
@@ -260,10 +298,11 @@ function GetCookies() {
     let entry = namelisting[name];
     if (entry) {
         Play(entry);
-        $("audio")[0].currentTime = Number(time);
-//        $("#last").show();
+	audio.time(Number(time));
+//        $("audio")[0].currentTime = Number(time);
         $("#last").on("click",(e,t=time) => {
-            $("audio")[0].currentTime = Number(t);
+	    audio.time(Number(t));
+//            $("audio")[0].currentTime = Number(t);
             $("#last").hide();
         }
         );
@@ -276,6 +315,7 @@ function ClearCookie() {
 }
 
 function init() {
+    audio = new AudioFile();
     PopulateStoryList();
     history = new History();
     

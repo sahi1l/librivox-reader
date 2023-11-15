@@ -72,7 +72,7 @@ nav:after {
     text-align: center;
     background-color:rgba(128,128,128,0.5);
 }
-#player.hide {opacity: 0.1;}
+#player.hide {opacity: 0.5;}
 #player #audio {width: 100%;}
 #player audio {width: 100%;}
 #player #buttons {
@@ -83,10 +83,15 @@ nav:after {
     padding-top: 5px;
 }
 #player #buttons button {
-    height: 40px;
-    width: 40px;
+    height: 2.5rem;
+    width: 2.5rem;
 }
-#playing {font-size:24px;}
+#playing {
+    font-size:1.5rem;
+    margin: 19px 0;
+}
+
+
 .skip {
     display: inline-block;
     font-weight: bold;
@@ -155,4 +160,8 @@ main {
 #history {
     font-size: 70%;
     margin-top: -1ex;
+    opacity: 0.2;
+}
+#status {
+    font-size: 0.4rem;
 }
